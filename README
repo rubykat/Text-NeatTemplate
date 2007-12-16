@@ -1,0 +1,172 @@
+
+==== NAME ====
+
+Text::NeatTemplate - a fast, middleweight template engine.
+
+
+==== VERSION ====
+
+This describes version ``0.08'' of Text::NeatTemplate.
+
+
+==== DESCRIPTION ====
+
+This module provides a simple, middleweight but fast template engine, for
+when you need speed rather than complex features, yet need more features
+than simple variable substitution.
+
+
+==   Markup Format   ==
+
+The markup format is as follows:
+
+{$varname}
+A variable; will display the value of the variable, or nothing if that value
+is empty.
+
+{$varname:format}
+A formatted variable; will apply the formatting directive(s) to the value
+before displaying it.
+
+{?varname stuff [$varname] more stuff}
+A conditional. If the value of 'varname' is not empty, this will display
+"stuff value-of-variable more stuff"; otherwise it displays nothing.
+
+    {?var1 stuff [$var1] thing [$var2]}
+
+This would use both the values of var1 and var2 if var1 is not empty.
+
+{?varname stuff [$varname] more stuff!!other stuff}
+A conditional with "else". If the value of 'varname' is not empty, this will
+display "stuff value-of-variable more stuff"; otherwise it displays "other
+stuff".
+
+This version can likewise use multiple variables in its display parts.
+
+    {?var1 stuff [$var1] thing [$var2]!![$var3]}
+
+{&funcname(arg1,...,argN)}
+Call a function with the given args; the return value of the function will
+be what is put in its place.
+
+    {&MyPackage::myfunc(stuff,[$var1])}
+
+This would call the function myfunc in the package MyPackage, with the
+arguments "stuff", and the value of var1.
+
+Note, of course, that if you have a more complicated function and are
+processing much data, this will slow things down.
+
+
+==   Limitations   ==
+
+To make the parsing simpler (and therefore faster) there are certain
+restrictions in what this module can do:
+
+*
+One cannot escape '{' '}' '[' or ']' characters. However, the substitution
+is clever enough so that you may be able to use them inside conditional
+constructs, provided the use does not resemble a variable.
+
+For example, to get a value surrounded by {}, the following will not work:
+
+{{$Var1}}
+
+However, this will:
+
+{?Var1 {[$Var1]}}
+
+*
+One cannot have nested variables.
+
+*
+Conditionals are limited to testing whether or not the variable has a value.
+If you want more elaborate tests, or tests on more than one value, you'll
+have to write a function to do it, and use the {&function()} construct.
+
+*
+Function arguments (as given with the {&funcname(arg1,arg2...)} format)
+cannot have commas in them, since commas are used to separate the arguments.
+
+
+==   Justification For Existence   ==
+
+When I was writing SQLite::Work, I originally tried using Text::Template (my
+favourite template engine) and also tried Text::FillIn. Both of them had
+some lovely, powerful features. Unfortunately, they were also relatively
+slow. In testing them with a 700-row table, using Text::Template took about
+15 seconds to generate the report, and using Text::FillIn took 45 seconds!
+Rolling my own very simple template engine cut the time down to about 7
+seconds.
+
+The reasons for this aren't that surprising. Because Text::Template is
+basically an embedded Perl engine, it has to run the interpreter on each
+substitution. And Text::FillIn has a lot to do, what with being very generic
+and very recursive.
+
+The trade-off for the speed-gain of Text::NeatTemplate is that it is quite
+simple. There is no nesting or recursion, there are no loops. But I do think
+I've managed to grab some of the nicer features of other template engines,
+such as limited conditionals, and formatting, and, the most powerful of all,
+calling external functions.
+
+This is a middleweight engine rather than a lightweight one, because I
+needed more than just simple variable substitution, such as one has with
+Template::Trivial. I consider the trade-off worth it, and others might also,
+so I made this a separate module.
+
+
+==== REQUIRES ====
+
+    Test::More
+
+
+==== INSTALLATION ====
+
+To install this module, run the following commands:
+
+    perl Build.PL
+    ./Build
+    ./Build test
+    ./Build install
+
+Or, if you're on a platform (like DOS or Windows) that doesn't like the "./"
+notation, you can do this:
+
+   perl Build.PL
+   perl Build
+   perl Build test
+   perl Build install
+
+In order to install somewhere other than the default, such as in a directory
+under your home directory, like "/home/fred/perl" go
+
+   perl Build.PL --install_base /home/fred/perl
+
+as the first step instead.
+
+This will install the files underneath /home/fred/perl.
+
+You will then need to make sure that you alter the PERL5LIB variable to find
+the module.
+
+Therefore you will need to change the PERL5LIB variable to add
+/home/fred/perl/lib
+
+        PERL5LIB=/home/fred/perl/lib:${PERL5LIB}
+
+
+==== AUTHOR ====
+
+    Kathryn Andersen (RUBYKAT)
+    perlkat AT katspace dot com
+    http://www.katspace.org/tools
+
+
+==== COPYRIGHT AND LICENCE ====
+
+Copyright (c) 2006 by Kathryn Andersen
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
