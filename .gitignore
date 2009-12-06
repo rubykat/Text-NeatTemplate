@@ -1,3 +1,8 @@
+# generated files
+META.yml
+Makefile.PL
+Makefile
+
 # distro files
 Text-NeatTemplate-*
 
