@@ -8,11 +8,11 @@ Text::NeatTemplate - a fast, middleweight template engine.
 
 =head1 VERSION
 
-This describes version B<0.08> of Text::NeatTemplate.
+This describes version B<0.10> of Text::NeatTemplate.
 
 =cut
 
-our $VERSION = '0.08';
+our $VERSION = '0.10';
 
 =head1 SYNOPSIS
 
@@ -218,6 +218,75 @@ sub fill_in {
 
     return $out;
 } # fill_in
+
+=head2 get_varnames
+
+Find variable names inside the given template.
+
+    @varnames = $tobj->get_varnames(template=>$text);
+
+=cut
+sub get_varnames {
+    my $self = shift;
+    my %args = (
+	template=>undef,
+	@_
+    );
+    my $template = $args{template};
+
+    return '' if (!$template);
+
+    my %varnames = ();
+    # { (the regex below needs matching)
+    while ($template =~ m/{([^}]+)}/g)
+    {
+	my $targ = $1;
+
+	if ($targ =~ /^\$(\w+[:\w]*)$/)
+	{
+	    my $val_id = $1;
+	    $varnames{$val_id} = 1;
+	}
+	elsif ($targ =~ /^\?(\w+)\s(.*)!!(.*)$/)
+	{
+	    my $val_id = $1;
+	    my $yes_t = $2;
+	    my $no_t = $3;
+
+	    $varnames{$val_id} = 1;
+
+	    foreach my $substr ($yes_t, $no_t)
+	    {
+		while ($substr =~ /\[(\$[^\]]+)\]/)
+		{
+		    $varnames{$1} = 1;
+		}
+	    }
+	}
+	elsif ($targ =~ /^\?(\w+)\s(.*)$/)
+	{
+	    my $val_id = $1;
+	    my $yes_t = $2;
+
+	    $varnames{$val_id} = 1;
+	    while ($yes_t =~ /\[(\$[^\]]+)\]/)
+	    {
+		$varnames{$1} = 1;
+	    }
+	}
+	elsif ($targ =~ /^\&([\w:]+)\((.*)\)$/)
+	{
+	    # function
+	    my $func_name = $1;
+	    my $fargs = $2;
+	    while ($fargs =~ /\[(\$[^\]]+)\]/)
+	    {
+		$varnames{$1} = 1;
+	    }
+	}
+    }
+    return sort keys %varnames;
+} # get_varnames
 
 =head2 do_replace
 

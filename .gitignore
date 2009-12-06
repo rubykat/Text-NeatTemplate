@@ -1,0 +1,8 @@
+# distro files
+Text-NeatTemplate-*
+
+# Build files
+blib/
+Build
+_build/
+
