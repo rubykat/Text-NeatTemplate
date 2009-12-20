@@ -242,12 +242,12 @@ sub get_varnames {
     {
 	my $targ = $1;
 
-	if ($targ =~ /^\$(\w+[:\w]*)$/)
+	if ($targ =~ /^\$(\w+[-:\w]*)$/)
 	{
 	    my $val_id = $1;
 	    $varnames{$val_id} = 1;
 	}
-	elsif ($targ =~ /^\?(\w+)\s(.*)!!(.*)$/)
+	elsif ($targ =~ /^\?([-\w]+)\s(.*)!!(.*)$/)
 	{
 	    my $val_id = $1;
 	    my $yes_t = $2;
@@ -263,7 +263,7 @@ sub get_varnames {
 		}
 	    }
 	}
-	elsif ($targ =~ /^\?(\w+)\s(.*)$/)
+	elsif ($targ =~ /^\?([-\w]+)\s(.*)$/)
 	{
 	    my $val_id = $1;
 	    my $yes_t = $2;
@@ -274,7 +274,7 @@ sub get_varnames {
 		$varnames{$1} = 1;
 	    }
 	}
-	elsif ($targ =~ /^\&([\w:]+)\((.*)\)$/)
+	elsif ($targ =~ /^\&([-\w:]+)\((.*)\)$/)
 	{
 	    # function
 	    my $func_name = $1;
@@ -321,7 +321,7 @@ sub do_replace {
     my $targ = $args{targ};
 
     return '' if (!$targ);
-    if ($targ =~ /^\$(\w+[:\w]*)$/)
+    if ($targ =~ /^\$(\w+[-:\w]*)$/)
     {
 	my $val = $self->get_value(val_id=>$1,
 	    data_hash=>$args{data_hash},
@@ -335,7 +335,7 @@ sub do_replace {
 	    return '';
 	}
     }
-    elsif ($targ =~ /^\?(\w+)\s(.*)!!(.*)$/)
+    elsif ($targ =~ /^\?([-\w]+)\s(.*)!!(.*)$/)
     {
 	my $val_id = $1;
 	my $yes_t = $2;
@@ -354,7 +354,7 @@ sub do_replace {
 	    return $no_t;
 	}
     }
-    elsif ($targ =~ /^\?(\w+)\s(.*)$/)
+    elsif ($targ =~ /^\?([-\w]+)\s(.*)$/)
     {
 	my $val_id = $1;
 	my $yes_t = $2;
@@ -371,7 +371,7 @@ sub do_replace {
 	    return '';
 	}
     }
-    elsif ($targ =~ /^\&([\w:]+)\((.*)\)$/)
+    elsif ($targ =~ /^\&([-\w:]+)\((.*)\)$/)
     {
 	# function
 	my $func_name = $1;
