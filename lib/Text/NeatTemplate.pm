@@ -566,6 +566,7 @@ sub convert_value {
 		     sprintf('%.1f%%',($value*100))
 		     || sprintf('%d%%',int($value*100))));
 	/^url/i &&    (return "<a href='$value'>$value</a>");
+	/^wikilink/i &&    (return "[[$value]]");
 	/^email/i &&    (return "<a mailto='$value'>$value</a>");
 	/^hmail/i && do {
 	    $value =~ s/@/ at /;
@@ -650,12 +651,45 @@ sub convert_value {
 	    $value = join('', $name, '_', $value);
 	    return $value;
 	};
+	/^alphadash/i && do {
+	    $value =~ s/ /_/g;
+	    $value =~ s/[^a-zA-Z0-9_-]//g;
+	    return $value;
+	};
+	/^pipetocomma/i && do {
+	    $value =~ s/\|/, /g;
+	    return $value;
+	};
+	/^pipetoslash/i && do {
+	    $value =~ s/\|/\//g;
+	    return $value;
+	};
 	/^words(\d+)/ && do {
 	    my $ct = $1;
 	    ($ct>0) || return '';
 	    my @sentence = split(/\s+/, $value);
 	    my (@words) = splice(@sentence,0,$ct);
 	    return join(' ', @words);
+	};
+	/^wlink_(\w+)/ && do {
+	    my $prefix = $1;
+	    return "[[$prefix/$value]]";
+	};
+	/^item(\d+)/ && do {
+	    my $ct = $1;
+	    ($ct>0) || return '';
+	    my @items = split(/\|/, $value);
+	    return $items[$ct];
+	};
+	/^items(\w+)/ && do {
+	    my $next = $1;
+	    my @items = split(/\|/, $value);
+	    my @next_items = ();
+	    foreach my $item (@items)
+	    {
+		push @next_items, $self->convert_value(%args, value=>$item, format=>$next);
+	    }
+	    return join(' ', @next_items);
 	};
 
 	# otherwise, give up
