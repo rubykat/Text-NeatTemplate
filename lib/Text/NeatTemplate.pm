@@ -681,7 +681,13 @@ sub convert_value {
 	    my @items = split(/\|/, $value);
 	    return $items[$ct];
 	};
-	/^items(\w+)/ && do {
+	/^itemslash(\d+)/ && do {
+	    my $ct = $1;
+	    ($ct>0) || return '';
+	    my @items = split(/\//, $value);
+	    return $items[$ct];
+	};
+	/^items_(\w+)/ && do {
 	    my $next = $1;
 	    my @items = split(/\|/, $value);
 	    my @next_items = ();
@@ -690,6 +696,16 @@ sub convert_value {
 		push @next_items, $self->convert_value(%args, value=>$item, format=>$next);
 	    }
 	    return join(' ', @next_items);
+	};
+	/^itemsjslash_(\w+)/ && do {
+	    my $next = $1;
+	    my @items = split(/\|/, $value);
+	    my @next_items = ();
+	    foreach my $item (@items)
+	    {
+		push @next_items, $self->convert_value(%args, value=>$item, format=>$next);
+	    }
+	    return join(' / ', @next_items);
 	};
 
 	# otherwise, give up
