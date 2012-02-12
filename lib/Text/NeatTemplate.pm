@@ -6,14 +6,6 @@ use warnings;
 
 Text::NeatTemplate - a fast, middleweight template engine.
 
-=head1 VERSION
-
-This describes version B<0.10> of Text::NeatTemplate.
-
-=cut
-
-our $VERSION = '0.10';
-
 =head1 SYNOPSIS
 
     use Text::NeatTemplate;
