@@ -4,10 +4,7 @@
 ,v$
 ^_darcs/
 
-version.txt
-old_version.txt
-mod_devaid.conf
-darcs_prebuild.pl
+dist.ini
 .todo
 
 # distro files
