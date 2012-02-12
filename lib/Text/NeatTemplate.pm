@@ -152,7 +152,139 @@ For example:
 
 will give the value of the I<Money> variable formatted as a dollar value.
 
-See L</convert_value> for details of all the formatting directives.
+Formatting directives are:
+
+=over
+
+=item alpha
+
+Convert to a string containing only alphanumeric characters
+(useful for anchors or filenames)
+
+=item alphadash
+
+Convert to a string containing alphanumeric characters, dashes
+and underscores; spaces are converted to underscores.
+(useful for anchors or filenames)
+
+=item comma_front
+
+Put anything after the last comma at the front (as with an author name)
+For example, "Smith,Sarah Jane" becomes "Sarah Jane Smith".
+
+=item dollars
+
+Return as a dollar value (float of precision 2)
+
+=item email
+
+Convert to a HTML mailto link.
+
+=item float
+
+Convert to float.
+
+=item hmail
+
+Convert to a "humanized" version of the email, with the @ and '.'
+replaced with "at" and "dot".  This is useful to prevent spambots
+harvesting email addresses.
+
+=item html
+
+Convert to simple HTML (simple formatting)
+
+=item int
+
+Convert to integer
+
+=item itemI<num>
+
+Assume that the value is multiple values separated by the "pipe" symbol (|) and
+select the item with an index of I<num> (starting at zero)
+
+=item items_I<directive>
+
+Assume that the value is multiple values separated by the "pipe" symbol (|) and
+split the values into an array, apply the I<directive> directive to them, and
+join them together with a space.
+
+=item itemsjslash_I<directive>
+
+Like items_I<directive>, but the results are joined together with a slash between them.
+
+=item itemslashI<num>
+
+Assume that the value is multiple values separated by the "slash" symbol (/) and
+select the item with an index of I<num> (starting at zero)
+Good for selecting out components of pathnames.
+
+=item lower
+
+Convert to lower case.
+
+=item month
+
+Convert the number value to an English month name.
+
+=item namedalpha
+
+Similar to 'alpha', but prepends the 'name' of the value.
+Assumes that the name is only alphanumeric.
+
+=item nth
+
+Convert the number value to a N-th value.  Numbers ending with 1 have 'st'
+appended, 2 have 'nd' appended, 3 have 'rd' appended, and everything
+else has 'th' appended.
+
+=item percent
+
+Show as if the value is a percentage.
+
+=item pipetocomma
+
+Assume that the value is multiple values separated by the "pipe" symbol (|) and replace
+those with a comma and space.
+
+=item pipetoslash
+
+Assume that the value is multiple values separated by the "pipe" symbol (|) and replace
+those with a forward slash (/).
+
+=item proper
+
+Convert to a Proper Noun.
+
+=item string
+
+Return the value with no change.
+
+=item title
+
+Put any trailing ",The" ",A" or ",An" at the front (as this is a title)
+
+=item truncateI<num>
+
+Truncate to I<num> length.
+
+=item upper
+
+Convert to upper case.
+
+=item url
+
+Convert to a HTML href link.
+
+=item wikilink
+
+Format the value as the most common kind of wikilink, that is [[I<value>]]
+
+=item wordsI<num>
+
+Give the first I<num> words of the value.
+
+=back
 
 =cut
 
@@ -440,98 +572,8 @@ sub get_value {
 
 Convert a value according to the given formatting directive.
 
-Directives are:
+See L</FORMATTING> for details of all the formatting directives.
 
-=over
-
-=item upper
-
-Convert to upper case.
-
-=item lower
-
-Convert to lower case.
-
-=item int
-
-Convert to integer
-
-=item float
-
-Convert to float.
-
-=item string
-
-Return the value with no change.
-
-=item truncateI<num>
-
-Truncate to I<num> length.
-
-=item dollars
-
-Return as a dollar value (float of precision 2)
-
-=item percent
-
-Show as if the value is a percentage.
-
-=item title
-
-Put any trailing ",The" ",A" or ",An" at the front (as this is a title)
-
-=item comma_front
-
-Put anything after the last comma at the front (as with an author name)
-For example, "Smith,Sarah Jane" becomes "Sarah Jane Smith".
-
-=item month
-
-Convert the number value to a month name.
-
-=item nth
-
-Convert the number value to a N-th value.  Numbers ending with 1 have 'st'
-appended, 2 have 'nd' appended, 3 have 'rd' appended, and everything
-else has 'th' appended.
-
-=item url
-
-Convert to a HTML href link.
-
-=item email
-
-Convert to a HTML mailto link.
-
-=item hmail
-
-Convert to a "humanized" version of the email, with the @ and '.'
-replaced with "at" and "dot".  This is useful to prevent spambots
-harvesting email addresses.
-
-=item html
-
-Convert to simple HTML (simple formatting)
-
-=item proper
-
-Convert to a Proper Noun.
-
-=item wordsI<num>
-
-Give the first I<num> words of the value.
-
-=item alpha
-
-Convert to a string containing only alphanumeric characters
-(useful for anchors or filenames)
-
-=item namedalpha
-
-Similar to 'alpha', but prepends the 'name' of the value.
-Assumes that the name is only alphanumeric.
-
-=back
 
 =cut
 sub convert_value {
@@ -669,13 +711,13 @@ sub convert_value {
 	};
 	/^item(\d+)/ && do {
 	    my $ct = $1;
-	    ($ct>0) || return '';
+	    ($ct>=0) || return '';
 	    my @items = split(/\|/, $value);
 	    return $items[$ct];
 	};
 	/^itemslash(\d+)/ && do {
 	    my $ct = $1;
-	    ($ct>0) || return '';
+	    ($ct>=0) || return '';
 	    my @items = split(/\//, $value);
 	    return $items[$ct];
 	};
