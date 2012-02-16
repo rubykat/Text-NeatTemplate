@@ -685,9 +685,9 @@ sub convert_value {
 	    $value =~ s!/! !g;
             $value =~ s/^\s+//;
             $value =~ s/\s+$//;
-	    $value =~ s!\s+-\s+!-!g;
+	    $value =~ s/[^\w\s-]//g;
+	    $value =~ s/\s\s+/ /g;
 	    $value =~ s/ /_/g;
-	    $value =~ s/[^a-zA-Z0-9_-]//g;
 	    return $value;
 	};
 	/^alpha/i && do {
