@@ -685,7 +685,7 @@ sub convert_value {
 	    $value =~ s!/! !g;
             $value =~ s/^\s+//;
             $value =~ s/\s+$//;
-	    $value =~ s/[^\w\s-]//g;
+	    $value =~ s/[^\w\s_-]//g;
 	    $value =~ s/\s\s+/ /g;
 	    $value =~ s/ /_/g;
 	    return $value;
@@ -712,6 +712,16 @@ sub convert_value {
 	/^wlink_(\w+)/ && do {
 	    my $prefix = $1;
 	    return "[[$prefix/$value]]";
+	};
+	/^tagify/i && do {
+	    $value =~ s/\|/,/g;
+	    $value =~ s!/! !g;
+            $value =~ s/^\s+//;
+            $value =~ s/\s+$//;
+	    $value =~ s/[^\w,\s_-]//g;
+	    $value =~ s/\s\s+/ /g;
+	    $value =~ s/ /_/g;
+	    return $value;
 	};
 	/^item(\d+)/ && do {
 	    my $ct = $1;
