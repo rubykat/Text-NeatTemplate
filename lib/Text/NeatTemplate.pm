@@ -716,11 +716,24 @@ sub convert_value {
 	/^tagify/i && do {
 	    $value =~ s/\|/,/g;
 	    $value =~ s!/! !g;
+	    $value =~ s/!/ /g;
             $value =~ s/^\s+//;
             $value =~ s/\s+$//;
 	    $value =~ s/[^\w,\s_-]//g;
 	    $value =~ s/\s\s+/ /g;
 	    $value =~ s/ /_/g;
+	    return $value;
+	};
+	/^namedtagify/i && do {
+	    $value =~ s/\|/,/g;
+	    $value =~ s!/! !g;
+	    $value =~ s/!/ /g;
+            $value =~ s/^\s+//;
+            $value =~ s/\s+$//;
+	    $value =~ s/[^\w,\s_-]//g;
+	    $value =~ s/\s\s+/ /g;
+	    $value =~ s/ /_/g;
+	    $value = join('_', $name, $value);
 	    return $value;
 	};
 	/^item(\d+)/ && do {
