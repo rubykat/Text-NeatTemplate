@@ -676,14 +676,14 @@ sub convert_value {
 		      )
 		   );
 	};
-	/^namedalphadash/i && do {
+	/^facettag/i && do {
 	    $value =~ s!/! !g;
             $value =~ s/^\s+//;
             $value =~ s/\s+$//;
 	    $value =~ s/[^\w\s_-]//g;
 	    $value =~ s/\s\s+/ /g;
 	    $value =~ s/ /_/g;
-	    $value = join('_', $name, $value);
+	    $value = join(':', $name, $value);
 	    return $value;
 	};
 	/^namedalpha/i && do {
