@@ -680,7 +680,7 @@ sub convert_value {
 	    $value =~ s!/! !g;
             $value =~ s/^\s+//;
             $value =~ s/\s+$//;
-	    $value =~ s/[^\w\s_-]//g;
+	    $value =~ s/[^\w\s:_-]//g;
 	    $value =~ s/\s\s+/ /g;
 	    $value =~ s/ /_/g;
 	    $value = join(':', $name, $value);
