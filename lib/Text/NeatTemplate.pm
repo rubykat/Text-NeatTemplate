@@ -684,14 +684,24 @@ sub convert_value {
 		      )
 		   );
 	};
+	/^facettag/i && do {
+	    $value =~ s!/! !g;
+            $value =~ s/^\s+//;
+            $value =~ s/\s+$//;
+	    $value =~ s/[^\w\s:_-]//g;
+	    $value =~ s/\s\s+/ /g;
+	    $value =~ s/ /_/g;
+	    $value = join(':', $name, $value);
+	    return $value;
+	};
 	/^namedalpha/i && do {
 	    $value =~ s/[^a-zA-Z0-9]//g;
-	    $value = join('', $name, '_', $value);
+	    $value = join('_', $name, $value);
 	    return $value;
 	};
 	/^alphadash/i && do {
 	    $value =~ s!/! !g;
-	    $value =~ s/[^a-zA-Z0-9\s-]//g;
+	    $value =~ s/[^a-zA-Z0-9_\s-]//g;
             $value =~ s/^\s+//;
             $value =~ s/\s+$//;
 	    $value =~ s/\s\s+/ /g;
@@ -720,6 +730,17 @@ sub convert_value {
 	/^wlink_(\w+)/ && do {
 	    my $prefix = $1;
 	    return "[[$prefix/$value]]";
+	};
+	/^tagify/i && do {
+	    $value =~ s/\|/,/g;
+	    $value =~ s!/! !g;
+	    $value =~ s/!/ /g;
+            $value =~ s/^\s+//;
+            $value =~ s/\s+$//;
+	    $value =~ s/[^\w,\s_-]//g;
+	    $value =~ s/\s\s+/ /g;
+	    $value =~ s/ /_/g;
+	    return $value;
 	};
 	/^item(\d+)/ && do {
 	    my $ct = $1;
@@ -752,6 +773,16 @@ sub convert_value {
 		push @next_items, $self->convert_value(%args, value=>$item, format=>$next);
 	    }
 	    return join(' / ', @next_items);
+	};
+	/^itemsjcomma_(\w+)/ && do {
+	    my $next = $1;
+	    my @items = split(/[\|,]\s*/, $value);
+	    my @next_items = ();
+	    foreach my $item (@items)
+	    {
+		push @next_items, $self->convert_value(%args, value=>$item, format=>$next);
+	    }
+	    return join(',', @next_items);
 	};
 
 	# otherwise, give up
