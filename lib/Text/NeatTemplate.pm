@@ -1,4 +1,5 @@
 package Text::NeatTemplate;
+
 use strict;
 use warnings;
 
