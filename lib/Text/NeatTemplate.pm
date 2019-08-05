@@ -174,6 +174,12 @@ Convert to a string containing only alphanumeric characters
 and then prefix with a hash (#) character
 (useful for anchors or tags)
 
+=item alphahyphen
+
+Convert to a string containing alphanumeric characters, dashes
+and underscores; spaces are converted to hyphens.
+(useful for anchors or filenames)
+
 =item comma_front
 
 Put anything after the last comma at the front (as with an author name)
@@ -713,6 +719,15 @@ sub convert_value {
             $value =~ s/\s+$//;
 	    $value =~ s/\s\s+/ /g;
 	    $value =~ s/ /_/g;
+	    return $value;
+	};
+	/^alphahyphen/i && do {
+	    $value =~ s!/! !g;
+	    $value =~ s/[^a-zA-Z0-9_\s-]//g;
+            $value =~ s/^\s+//;
+            $value =~ s/\s+$//;
+	    $value =~ s/\s\s+/ /g;
+	    $value =~ s/ /-/g;
 	    return $value;
 	};
 	/^alphahash/i && do {
