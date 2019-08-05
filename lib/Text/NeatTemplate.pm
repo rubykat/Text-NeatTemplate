@@ -167,6 +167,12 @@ Convert to a string containing alphanumeric characters, dashes
 and underscores; spaces are converted to underscores.
 (useful for anchors or filenames)
 
+=item alphahash
+
+Convert to a string containing only alphanumeric characters
+and then prefix with a hash (#) character
+(useful for anchors or tags)
+
 =item comma_front
 
 Put anything after the last comma at the front (as with an author name)
@@ -706,6 +712,11 @@ sub convert_value {
             $value =~ s/\s+$//;
 	    $value =~ s/\s\s+/ /g;
 	    $value =~ s/ /_/g;
+	    return $value;
+	};
+	/^alphahash/i && do {
+	    $value =~ s/[^a-zA-Z0-9]//g;
+            $value = "#${value}";
 	    return $value;
 	};
 	/^alpha/i && do {
