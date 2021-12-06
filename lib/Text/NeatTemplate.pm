@@ -185,6 +185,22 @@ and underscores; spaces are converted to hyphens.
 Put anything after the last comma at the front (as with an author name)
 For example, "Smith,Sarah Jane" becomes "Sarah Jane Smith".
 
+=item date_day
+
+Return the day part of a YYYY-MM-DD date.
+
+=item date_mth
+
+Return the month part of a YYYY-MM-DD date.
+
+=item date_month
+
+Return the month part of a YYYY-MM-DD date as an English month name.
+
+=item date_year
+
+Return the year part of a YYYY-MM-DD date.
+
 =item dollars
 
 Return as a dollar value (float of precision 2)
@@ -196,6 +212,10 @@ Convert to a HTML mailto link.
 =item float
 
 Convert to float.
+
+=item facettag
+
+Convert to a "faceted" tag, that is, the words are joined by a colon.
 
 =item hmail
 
@@ -273,6 +293,10 @@ Convert to a Proper Noun.
 
 Return the value with no change.
 
+=item span
+
+Surround the value with HTML span tags. (Useful for CSS formatting.)
+
 =item title
 
 Put any trailing ",The" ",A" or ",An" at the front (as this is a title)
@@ -292,6 +316,11 @@ Convert to a HTML href link.
 =item wikilink
 
 Format the value as the most common kind of wikilink, that is [[I<value>]]
+
+=item wlink_I<prefix>
+
+Format the value as the most common kind of wikilink with a prefix;
+that is [[I<prefix>/I<value>]]
 
 =item wordsI<num>
 
@@ -622,6 +651,7 @@ sub convert_value {
 		     || sprintf('%d%%',int($value*100))));
 	/^url/i &&    (return "<a href='$value'>$value</a>");
 	/^wikilink/i &&    (return "[[$value]]");
+	/^span/i &&    (return "<span>$value</span>");
 	/^email/i &&    (return "<a mailto='$value'>$value</a>");
 	/^hmail/i && do {
 	    $value =~ s/@/ at /;
